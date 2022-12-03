@@ -10,7 +10,7 @@ namespace Crypto_Wallet.Classes.Assets
     public class NonFungibleAsset : Asset
     {
         public string ValueAdress;
-        public NonFungibleAsset(string name, decimal value)
+        public NonFungibleAsset(string name, double value)
         {
             Adress = Guid.NewGuid();
             Name = name;

@@ -17,6 +17,8 @@ namespace Crypto_Wallet.Classes
         public Dictionary<Guid, int> FungibleAssets;
         public List<Asset> SupportedAssets;
 
+        public bool IsCreatedByUser;
+
         public void printData()
         {
             Console.WriteLine("");

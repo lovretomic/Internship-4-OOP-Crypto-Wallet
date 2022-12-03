@@ -9,7 +9,7 @@ namespace Crypto_Wallet.Classes.Assets
     public class FungibleAsset : Asset
     {
         public string Label;
-        public FungibleAsset(string name, decimal value, string label)
+        public FungibleAsset(string name, double value, string label)
         {
             Adress = Guid.NewGuid();
             Name = name;

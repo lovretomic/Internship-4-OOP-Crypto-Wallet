@@ -9,10 +9,11 @@ namespace Crypto_Wallet.Classes.Wallets
     public class EthereumWallet : Wallet
     {
         public List<Guid> NonFungibleAssets;
-        public EthereumWallet() 
+        public EthereumWallet(bool isCreatedByUser) 
         {
             Adress = Guid.NewGuid();
             WalletType = Enums.WalletType.ETH;
+            IsCreatedByUser = isCreatedByUser;
         }
     }
 }

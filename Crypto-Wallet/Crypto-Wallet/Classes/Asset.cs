@@ -10,6 +10,6 @@ namespace Crypto_Wallet.Classes
     {
         public Guid Adress;
         public string Name;
-        public decimal ValueUSD;
+        public double ValueUSD;
     }
 }

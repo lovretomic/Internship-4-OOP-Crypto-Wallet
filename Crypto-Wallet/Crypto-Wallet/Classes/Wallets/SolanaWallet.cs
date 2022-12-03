@@ -9,10 +9,11 @@ namespace Crypto_Wallet.Classes.Wallets
     public class SolanaWallet : Wallet
     {
         public List<Guid> NonFungibleAssets;
-        public SolanaWallet() 
+        public SolanaWallet(bool isCreatedByUser) 
         {
             Adress = Guid.NewGuid();
             WalletType = Enums.WalletType.SOL;
+            IsCreatedByUser = isCreatedByUser;
         }
     }
 }

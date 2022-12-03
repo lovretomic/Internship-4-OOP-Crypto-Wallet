@@ -8,10 +8,11 @@ namespace Crypto_Wallet.Classes.Wallets
 {
     public class BitcoinWallet : Wallet
     {
-        public BitcoinWallet()
+        public BitcoinWallet(bool isCreatedByUser)
         {
             Adress = Guid.NewGuid();
             WalletType = Enums.WalletType.BTC;
+            IsCreatedByUser= isCreatedByUser;
         }
     }
 }
