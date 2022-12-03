@@ -8,6 +8,7 @@ namespace Crypto_Wallet.Classes.Wallets
 {
     public class EthereumWallet : Wallet
     {
+        public List<Guid> NonFungibleAssets;
         public EthereumWallet() 
         {
             Adress = Guid.NewGuid();
