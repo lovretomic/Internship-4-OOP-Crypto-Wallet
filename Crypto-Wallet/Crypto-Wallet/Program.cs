@@ -37,6 +37,7 @@ void MainMenu()
             createWallet();
             break;
         case 2:
+            accessWallet();
             break;
         case 0:
             return;
@@ -78,5 +79,19 @@ void createWallet()
             Console.WriteLine("## Pogresan unos! Unos mora biti neka od navedenih opcija.");
             returnToMainMenu(true);
             break;
+    }
+}
+
+void accessWallet()
+{
+    Console.Clear();
+    Console.WriteLine("--- PRISTUP WALLETU ---");
+    if (wallets.Any())
+        foreach (var wallet in wallets)
+            wallet.printData();
+    else
+    {
+        Console.WriteLine("Ne postoji niti jedan upisani wallet.");
+        returnToMainMenu(true);
     }
 }

@@ -11,6 +11,7 @@ namespace Crypto_Wallet.Classes.Wallets
         public EthereumWallet() 
         {
             Adress = Guid.NewGuid();
+            WalletType = Enums.WalletType.ETH;
         }
     }
 }
