@@ -3,20 +3,13 @@ using Crypto_Wallet.Classes.Assets;
 using Crypto_Wallet.Classes.Wallets;
 using Crypto_Wallet.Enums;
 
-var wallets = new List<Wallet>()
-{
-    new BitcoinWallet(false),
-    new BitcoinWallet(false),
-    new BitcoinWallet(false),
+// GDJE SI STAO?
+// Vjerojatno si uspio napisati kod za računanje ukupne vrijednosti svih asseta, ali da bi ga provjerio
+// moraš za sve wallete inicijalizirati nekoliko asseta. Zadnje si pokušao s opcijom da je jedan argument
+// pri stvaranju nekog walleta lista asseta koji će se postaviti na početku, ali ne znaš kako assete iz te
+// liste razvrstati na Fungible i NonFungible. Mislio si da svaki asset dobije mebmera isFungible, ali to
+// baš nema smisla. Možeš to pokušati, ali bila bi bolja neka alternativa.
 
-    new EthereumWallet(false),
-    new EthereumWallet(false),
-    new EthereumWallet(false),
-
-    new SolanaWallet(false),
-    new SolanaWallet(false),
-    new SolanaWallet(false)
-};
 var assets = new List<Asset>()
 {
     new FungibleAsset("FA1", 83.1, "L1"),
@@ -51,6 +44,21 @@ var assets = new List<Asset>()
     new NonFungibleAsset("NFA19", 34.9),
     new NonFungibleAsset("NFA20", 2.1)
 
+};
+
+var wallets = new List<Wallet>()
+{
+    new BitcoinWallet(false, new List<Asset>(){assets[0]}),
+    new BitcoinWallet(false, new List<Asset>(){assets[5]}),
+    new BitcoinWallet(false, new List<Asset>(){assets[3]}),
+
+    new EthereumWallet(false, new List<Asset>(){assets[4]}, new List<Asset>(){assets[10]}),
+    new EthereumWallet(false, new List<Asset>(){assets[5]}, new List<Asset>(){assets[15]}),
+    new EthereumWallet(false, new List<Asset>(){assets[1]}, new List<Asset>(){assets[13]}),
+
+    new SolanaWallet(false, new List<Asset>(){assets[0]}, new List<Asset>(){assets[17]}),
+    new SolanaWallet(false, new List<Asset>(){assets[3]}, new List<Asset>(){assets[16]}),
+    new SolanaWallet(false, new List<Asset>(){assets[2]}, new List<Asset>(){assets[11]})
 };
 
 foreach(var wallet in wallets)
@@ -117,17 +125,17 @@ void createWallet()
     switch (getInt())
     {
         case 1:
-            wallets.Add(new BitcoinWallet());
+            wallets.Add(new BitcoinWallet(true, null));
             Console.WriteLine("Uspjesno kreiran Bitcoin wallet!");
             returnToMainMenu(true);
             break;
         case 2:
-            wallets.Add(new EthereumWallet());
+            wallets.Add(new EthereumWallet(true, null, null));
             Console.WriteLine("Uspjesno kreiran Ethereum wallet!");
             returnToMainMenu(true);
             break;
         case 3:
-            wallets.Add(new SolanaWallet());
+            wallets.Add(new SolanaWallet(true, null, null));
             Console.WriteLine("Uspjesno kreiran Solana wallet!");
             returnToMainMenu(true);
             break;
@@ -150,4 +158,6 @@ void accessWallet()
         Console.WriteLine("Ne postoji niti jedan upisani wallet.");
         returnToMainMenu(true);
     }
+
+    returnToMainMenu(true);
 }
