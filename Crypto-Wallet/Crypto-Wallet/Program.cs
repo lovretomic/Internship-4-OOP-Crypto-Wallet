@@ -179,6 +179,7 @@ void accessWallet()
                         printWalletPortfolio(wallet);
                         break;
                     case 2:
+                        transfer(wallet);
                         break;
                     case 3:
                         break;
@@ -270,4 +271,85 @@ void printWalletPortfolio(Wallet wallet)
         wallet.LastAccessedTotalAssetValue = wallet.TotalAssetValue;
     }
     returnToMainMenu(true);
+}
+
+void transfer(Wallet wallet)
+{
+    Console.Clear();
+    Console.WriteLine("--- Transfer ---");
+
+    foreach(var singleWallet in wallets)
+    {
+        if(singleWallet.Adress != wallet.Adress)
+        {
+            Console.WriteLine("");
+            Console.WriteLine($"╔ TIP : {singleWallet.WalletType}");
+            Console.WriteLine($"╚ ADRESA : {singleWallet.Adress}");
+        }
+    }
+
+    Console.WriteLine("\nUnesi adresu primatelja: ");
+    var receiverAdress = Console.ReadLine();
+    bool adressExists = false;
+    do
+    {
+        foreach (var singleWallet in wallets)
+            if (String.Equals(singleWallet.Adress.ToString(), receiverAdress))
+            {
+                adressExists = true;
+                break;
+            }
+        if (!adressExists)
+        {
+            Console.WriteLine("## Wallet s tom adresom nije pronaden. Unesi novu adresu ili unesi 0 za povratak na glavni izbornik.");
+            receiverAdress = Console.ReadLine();
+            if(String.Equals(receiverAdress, "0")) returnToMainMenu(false);
+        }
+    } while (!adressExists);
+
+    Console.Clear();
+    Console.WriteLine("--- Transfer ---");
+    Console.WriteLine($"ADRESA PRIMATELJA: {receiverAdress}");
+
+    Console.WriteLine("\nFUNGIBLE ASSETI:");
+    foreach (var fungibleAsset in wallet.FungibleAssets)
+    {
+        foreach (var singleAsset in assets)
+        {
+            if(singleAsset.Adress == fungibleAsset.Key)
+            {
+                Console.WriteLine($"╔ IME : {singleAsset.Name}");
+                Console.WriteLine($"╚ ADRESA : {singleAsset.Adress}");
+                Console.WriteLine("");
+            }
+        }
+    }
+
+    Console.WriteLine("Unesi adresu asseta koji zelis poslati: ");
+    var assetAdress = Console.ReadLine();
+
+    Console.Clear();
+    Console.WriteLine("--- Transfer ---");
+    Console.WriteLine($"ADRESA PRIMATELJA: {receiverAdress}");
+    Console.WriteLine($"ADRESA ASSETA KOJI SE SALJE: {assetAdress}");
+
+    Console.WriteLine("\nJesi li siguran da zelis izvrsiti ovaj transfer?");
+    void confirmTransfer()
+    {
+        Console.WriteLine("1 - Da");
+        Console.WriteLine("2 - Ne");
+        switch (getInt())
+        {
+            case 1:
+                break;
+            case 2:
+                returnToMainMenu(true);
+                break;
+            default:
+                Console.WriteLine("## Pogresan unos! Ponovno unesi svoj izbor.");
+                confirmTransfer();
+                break;
+        }
+    }
+    confirmTransfer();
 }
