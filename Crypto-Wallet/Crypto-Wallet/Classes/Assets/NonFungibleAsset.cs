@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crypto_Wallet.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -16,6 +17,7 @@ namespace Crypto_Wallet.Classes.Assets
             Name = name;
             ValueUSD = value;
             ValueAdress = "0"; // GENERIRANJE?
+            Label = null;
         }
     }
 }

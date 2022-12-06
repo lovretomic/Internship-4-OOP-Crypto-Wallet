@@ -11,5 +11,6 @@ namespace Crypto_Wallet.Classes
         public Guid Adress;
         public string Name;
         public double ValueUSD;
+        public string? Label;
     }
 }

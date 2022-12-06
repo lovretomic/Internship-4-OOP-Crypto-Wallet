@@ -8,7 +8,7 @@ namespace Crypto_Wallet.Classes.Wallets
 {
     public class SolanaWallet : Wallet
     {
-        public List<Guid> NonFungibleAssets = new List<Guid>();
+        //public List<Guid> NonFungibleAssets = new List<Guid>();
         public SolanaWallet(bool isCreatedByUser, List<Asset>? defaultFungibleAssets, List<Asset>? defaultNonFungibleAssets)
         {
             Adress = Guid.NewGuid();

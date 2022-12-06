@@ -15,6 +15,7 @@ namespace Crypto_Wallet.Classes
         public WalletType WalletType;
 
         public Dictionary<Guid, int> FungibleAssets = new Dictionary<Guid, int>();
+        public List<Guid> NonFungibleAssets = new List<Guid>();
         public List<Asset> SupportedAssets;
         public double TotalAssetValue;
 
@@ -25,13 +26,13 @@ namespace Crypto_Wallet.Classes
 
         public void printData()
         {
-            Console.WriteLine("");
             Console.WriteLine($"TIP : {WalletType}");
             Console.WriteLine($"ADRESA : {Adress}");
             getTotalAssetValue();
             Console.WriteLine($"UKUPNA VRIJEDNOST ASSETA : {TotalAssetValue} USD");
             if(TimesAccessed != 0)
                 Console.WriteLine($"PROMIJENA UKUPNE VRIJEDNOSTI ASSETA : {(TotalAssetValue - LastAccessedTotalAssetValue) / LastAccessedTotalAssetValue * 100}%");
+            Console.WriteLine("----------");
             TimesAccessed++;
             LastAccessedTotalAssetValue = TotalAssetValue;
         }

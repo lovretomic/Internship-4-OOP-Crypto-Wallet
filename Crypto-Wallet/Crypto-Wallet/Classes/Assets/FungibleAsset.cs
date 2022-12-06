@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crypto_Wallet.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,6 @@ namespace Crypto_Wallet.Classes.Assets
 {
     public class FungibleAsset : Asset
     {
-        public string Label;
         public FungibleAsset(string name, double value, string label)
         {
             Adress = Guid.NewGuid();

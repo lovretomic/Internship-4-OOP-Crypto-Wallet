@@ -3,13 +3,6 @@ using Crypto_Wallet.Classes.Assets;
 using Crypto_Wallet.Classes.Wallets;
 using Crypto_Wallet.Enums;
 
-// GDJE SI STAO?
-// Vjerojatno si uspio napisati kod za računanje ukupne vrijednosti svih asseta, ali da bi ga provjerio
-// moraš za sve wallete inicijalizirati nekoliko asseta. Zadnje si pokušao s opcijom da je jedan argument
-// pri stvaranju nekog walleta lista asseta koji će se postaviti na početku, ali ne znaš kako assete iz te
-// liste razvrstati na Fungible i NonFungible. Mislio si da svaki asset dobije mebmera isFungible, ali to
-// baš nema smisla. Možeš to pokušati, ali bila bi bolja neka alternativa.
-
 var assets = new List<Asset>()
 {
     new FungibleAsset("FA1", 83.1, "L1"),
@@ -58,7 +51,7 @@ var wallets = new List<Wallet>()
 
     new SolanaWallet(false, new List<Asset>(){assets[0]}, new List<Asset>(){assets[17]}),
     new SolanaWallet(false, new List<Asset>(){assets[3]}, new List<Asset>(){assets[16]}),
-    new SolanaWallet(false, new List<Asset>(){assets[2]}, new List<Asset>(){assets[11]})
+    new SolanaWallet(false, new List<Asset>(){assets[2]}, new List<Asset>(){assets[11], assets[12]})
 };
 
 foreach(var wallet in wallets)
@@ -159,5 +152,122 @@ void accessWallet()
         returnToMainMenu(true);
     }
 
+    bool walletFound;
+    do
+    {
+        Console.WriteLine("Unesi adresu walleta kojem želiš ptistupiti.");
+        var adressInput = Console.ReadLine();
+
+        walletFound = false;
+        foreach (var wallet in wallets)
+        {
+            if (string.Compare(wallet.Adress.ToString(), adressInput) is 0)
+            {
+                walletFound = true;
+                Console.Clear();
+                Console.WriteLine("Wallet pronađen!\n");
+
+                Console.WriteLine("- FUNKCIJE -");
+                Console.WriteLine("1 - Portfolio");
+                Console.WriteLine("2 - Transfer");
+                Console.WriteLine("3 - Povijest transakcija");
+                Console.WriteLine("4 - Opozovi transakciju");
+                Console.WriteLine("0 - Povratak na prikaz walleta");
+                switch (getInt())
+                {
+                    case 1:
+                        printWalletPortfolio(wallet);
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 0:
+                        accessWallet();
+                        break;
+                    default:
+                        Console.WriteLine("## Pogresan unos! Unos mora biti neka od navedenih opcija.");
+                        returnToMainMenu(true);
+                        break;
+                }
+                break;
+            }
+        }
+        if (!walletFound)
+        {
+            Console.WriteLine("Wallet nije pronađen. Zelis li ponovno unijeti adresu?");
+            Console.WriteLine("1 - Da");
+            Console.WriteLine("2 - Ne");
+            switch (getInt())
+            {
+                case 1:
+                    break;
+                case 2:
+                    returnToMainMenu(true);
+                    break;
+                default:
+                    Console.WriteLine("## Pogresan unos! Unos mora biti neka od navedenih opcija.");
+                    returnToMainMenu(true);
+                    break;
+            }
+        }
+    } while (!walletFound);
+}
+
+void printWalletPortfolio(Wallet wallet)
+{
+    Console.Clear();
+    Console.WriteLine("--- PORFTOLIO ---");
+    Console.WriteLine($"UKUPNA VRIJEDNOST ASSETA : {wallet.TotalAssetValue} USD");
+    Console.WriteLine($"FUNGIBLE ASSETI :");
+    foreach(var fungibleAsset in wallet.FungibleAssets)
+    {
+        string assetName = "";
+        string assetLabel = "";
+        double assetSingleValueUSD = 0;
+
+        foreach(var asset in assets)
+            if(asset.Adress == fungibleAsset.Key)
+            {
+                assetName = asset.Name;
+                assetLabel = asset.Label;
+                assetSingleValueUSD = asset.ValueUSD;
+            }
+
+        Console.WriteLine($"╔ Adresa: {fungibleAsset.Key}");
+        Console.WriteLine($"╠ Ime: {assetName}");
+        Console.WriteLine($"╠ Oznaka: {assetLabel}");
+        Console.WriteLine($"╠ Vrijednost asseta: {assetSingleValueUSD} USD");
+        Console.WriteLine($"╠ Ukupna vrijednost: {assetSingleValueUSD * fungibleAsset.Value} USD");
+        if (wallet.TimesAccessed != 0)
+            Console.WriteLine($"╚ Promijenjena vrijednost asseta: {(wallet.TotalAssetValue - wallet.LastAccessedTotalAssetValue) / wallet.LastAccessedTotalAssetValue * 100}%");
+        Console.WriteLine("");
+        wallet.TimesAccessed++;
+        wallet.LastAccessedTotalAssetValue = wallet.TotalAssetValue;
+    }
+    Console.WriteLine($"FUNGIBLE ASSETI :");
+    foreach (var nonFungibleAssetGuid in wallet.NonFungibleAssets)
+    {
+        string assetName = "";
+        string assetLabel = "";
+        double assetSingleValueUSD = 0;
+
+        foreach (var asset in assets)
+            if (asset.Adress == nonFungibleAssetGuid)
+            {
+                assetName = asset.Name;
+                assetLabel = asset.Label;
+                assetSingleValueUSD = asset.ValueUSD;
+            }
+
+        Console.WriteLine($"╔ Adresa: {nonFungibleAssetGuid}");
+        Console.WriteLine($"╠ Ime: {assetName}");
+        Console.WriteLine($"╠ Ukupna vrijednost: {assetSingleValueUSD} USD");
+        if (wallet.TimesAccessed != 0)
+            Console.WriteLine($"╚ Promijenjena vrijednost asseta: {(wallet.TotalAssetValue - wallet.LastAccessedTotalAssetValue) / wallet.LastAccessedTotalAssetValue * 100}%");
+        Console.WriteLine("");
+        wallet.TimesAccessed++;
+        wallet.LastAccessedTotalAssetValue = wallet.TotalAssetValue;
+    }
     returnToMainMenu(true);
 }
