@@ -13,7 +13,6 @@ namespace Crypto_Wallet.Classes.Transactions
         public double ReceiverInitialBalance;
         public double ReceiverNewBalance;
 
-        public int AssetQuantity;
         public FungibleAssetTransaction(Asset asset, Wallet senderWallet, Wallet receiverWallet, int assetQuantity)
         {
             Id = Guid.NewGuid();
@@ -23,6 +22,7 @@ namespace Crypto_Wallet.Classes.Transactions
             ReceiverAdress = receiverWallet.Adress;
             isRevoked = false;
             AssetQuantity = assetQuantity;
+            TransactionType = Enums.AssetType.FUNGIBLE;
         }
     }
 }

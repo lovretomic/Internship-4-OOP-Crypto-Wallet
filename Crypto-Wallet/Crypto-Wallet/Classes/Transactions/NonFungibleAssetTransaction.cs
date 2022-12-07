@@ -16,6 +16,7 @@ namespace Crypto_Wallet.Classes.Transactions
             SenderAdress = senderWallet.Adress;
             ReceiverAdress = receiverWallet.Adress;
             isRevoked = false;
+            TransactionType = Enums.AssetType.NONFUNGIBLE;
         }
     }
 }

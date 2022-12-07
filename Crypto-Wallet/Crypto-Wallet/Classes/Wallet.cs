@@ -11,7 +11,7 @@ namespace Crypto_Wallet.Classes
     {
         public Guid Adress;
         public Dictionary<string, int> fungibleAssetsBalances;
-        public List<Guid> Transactions;
+        public List<Guid> Transactions = new List<Guid>();
         public WalletType WalletType;
 
         public Dictionary<Guid, int> FungibleAssets = new Dictionary<Guid, int>();

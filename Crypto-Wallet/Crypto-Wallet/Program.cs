@@ -55,6 +55,8 @@ var wallets = new List<Wallet>()
     new SolanaWallet(true, new List<Asset>(){assets[2]}, new List<Asset>(){assets[11], assets[12]})
 };
 
+var transactions = new List<Transaction>();
+
 foreach(var wallet in wallets)
 {
     if (wallet.WalletType is WalletType.BTC) wallet.SupportedAssets = assets.GetRange(0, 10);
@@ -191,6 +193,7 @@ void accessWallet()
                         transfer(wallet);
                         break;
                     case 3:
+                        printTransactions(wallet);
                         break;
                     case 0:
                         accessWallet();
@@ -400,6 +403,8 @@ void transfer(Wallet wallet)
                 if (asset.AssetType == AssetType.FUNGIBLE) transaction = new FungibleAssetTransaction(asset, wallet, receiverWallet, inputQuantity);
                 else transaction = new NonFungibleAssetTransaction(asset, wallet, receiverWallet);
 
+                transactions.Add(transaction);
+
                 for (int i = 0; i < wallets.Count(); i++)
                 {
                     if (wallet.Adress == wallets[i].Adress)
@@ -431,4 +436,39 @@ void transfer(Wallet wallet)
         }
     }
     confirmTransfer();
+}
+
+void printTransactions(Wallet wallet)
+{
+    Console.Clear();
+    Console.WriteLine("--- POVIJEST TRANSAKCIJA ---");
+    int transactionCount = 0;
+    foreach(var transaction in transactions)
+    {
+        if(transaction.SenderAdress == wallet.Adress)
+        {
+            transactionCount++;
+            Console.WriteLine($"ID : {transaction.Id}");
+            Console.WriteLine($"VRIJEME : {transaction.Date}");
+            Console.WriteLine($"ADRESA POSILJATELJA : {transaction.SenderAdress}");
+            Console.WriteLine($"ADRESA PRIMATELJA : {transaction.ReceiverAdress}");
+            if(transaction.TransactionType == AssetType.FUNGIBLE)
+            {
+                Console.WriteLine($"KOLICINA ASSETA : {transaction.AssetQuantity}");
+            }
+            foreach (var asset in assets)
+                if (asset.Adress == transaction.AssetAdress)
+                    Console.WriteLine($"IME ASSETA : {asset.Name}");
+            if (transaction.isRevoked) Console.WriteLine($"TRANSAKCIJA OPOZVANA");
+            else Console.WriteLine($"TRANSAKCIJA NIJE OPOZVANA");
+            Console.WriteLine("--------------------");
+        }
+    }
+    if (transactionCount == 0) Console.WriteLine("Nije zabiljezena niti jedna transakcija.");
+    returnToMainMenu(true);
+}
+
+void revokeTransaction(Wallet wallet)
+{
+
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crypto_Wallet.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,7 @@ namespace Crypto_Wallet.Classes
         public Guid SenderAdress;
         public Guid ReceiverAdress;
         public bool isRevoked;
+        public AssetType TransactionType;
+        public int AssetQuantity;
     }
 }
