@@ -1,5 +1,6 @@
 ﻿using Crypto_Wallet.Classes;
 using Crypto_Wallet.Classes.Assets;
+using Crypto_Wallet.Classes.Transactions;
 using Crypto_Wallet.Classes.Wallets;
 using Crypto_Wallet.Enums;
 
@@ -272,9 +273,14 @@ void printWalletPortfolio(Wallet wallet)
     }
     returnToMainMenu(true);
 }
-
 void transfer(Wallet wallet)
 {
+    Wallet receiverWallet = null;
+    Asset asset = null;
+    int inputQuantity = 0;
+    AssetType assetType = AssetType.FUNGIBLE;
+    Guid assetAdress = Guid.NewGuid();
+
     Console.Clear();
     Console.WriteLine("--- Transfer ---");
 
@@ -290,6 +296,7 @@ void transfer(Wallet wallet)
 
     Console.WriteLine("\nUnesi adresu primatelja: ");
     var receiverAdress = Console.ReadLine();
+
     bool adressExists = false;
     do
     {
@@ -297,6 +304,7 @@ void transfer(Wallet wallet)
             if (String.Equals(singleWallet.Adress.ToString(), receiverAdress))
             {
                 adressExists = true;
+                receiverWallet = singleWallet;
                 break;
             }
         if (!adressExists)
@@ -315,7 +323,7 @@ void transfer(Wallet wallet)
     foreach (var fungibleAsset in wallet.FungibleAssets)
     {
         foreach (var singleAsset in assets)
-        {
+        {   // ako je bitcoin wallet prikazi samo fungible assete
             if(singleAsset.Adress == fungibleAsset.Key)
             {
                 Console.WriteLine($"╔ IME : {singleAsset.Name}");
@@ -326,12 +334,45 @@ void transfer(Wallet wallet)
     }
 
     Console.WriteLine("Unesi adresu asseta koji zelis poslati: ");
-    var assetAdress = Console.ReadLine();
+    var assetAdressInput = Console.ReadLine();
+
+    adressExists = false;
+    do
+    {
+        foreach (var singleAsset in assets)
+            if (String.Equals(singleAsset.Adress.ToString(), assetAdressInput))
+            {
+                adressExists = true;
+                asset = singleAsset;
+                assetType = singleAsset.AssetType;
+                assetAdress = singleAsset.Adress;
+                break;
+            }
+        if (!adressExists)
+        {
+            Console.WriteLine("## Asset s tom adresom nije pronaden. Unesi novu adresu ili unesi 0 za povratak na glavni izbornik.");
+            assetAdressInput = Console.ReadLine();
+            if (String.Equals(receiverAdress, "0")) returnToMainMenu(false);
+        }
+    } while (!adressExists);
 
     Console.Clear();
     Console.WriteLine("--- Transfer ---");
     Console.WriteLine($"ADRESA PRIMATELJA: {receiverAdress}");
-    Console.WriteLine($"ADRESA ASSETA KOJI SE SALJE: {assetAdress}");
+    Console.WriteLine($"ADRESA ASSETA KOJI SE SALJE: {assetAdressInput}");
+
+    if (assetType == AssetType.FUNGIBLE)
+    {
+        Console.WriteLine("Unesi kolicinu asseta ili 0 za povratak na glavni izbornik: ");
+        int totalQuantity = wallet.FungibleAssets[assetAdress];
+        do
+        {
+            inputQuantity = int.Parse(Console.ReadLine());
+            if (inputQuantity == 0) returnToMainMenu(false);
+            if(inputQuantity > totalQuantity)
+                Console.WriteLine("## Upisana kolicina veca je od dostupne kolicine tog asseta. Upisi novu kolicinu ili 0 za povratak na glavni izbornik:");
+        } while (inputQuantity <= totalQuantity);
+    }
 
     Console.WriteLine("\nJesi li siguran da zelis izvrsiti ovaj transfer?");
     void confirmTransfer()
@@ -341,6 +382,13 @@ void transfer(Wallet wallet)
         switch (getInt())
         {
             case 1:
+                Transaction transaction;
+                if (asset.AssetType == AssetType.FUNGIBLE) transaction = new FungibleAssetTransaction(asset, wallet, receiverWallet, inputQuantity);
+                else transaction = new NonFungibleAssetTransaction(asset, wallet, receiverWallet);
+
+                wallet.Transactions.Add(transaction.Id);
+                receiverWallet.Transactions.Add(transaction.Id);
+
                 break;
             case 2:
                 returnToMainMenu(true);

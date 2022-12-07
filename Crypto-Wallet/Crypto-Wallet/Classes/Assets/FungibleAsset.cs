@@ -15,6 +15,7 @@ namespace Crypto_Wallet.Classes.Assets
             Name = name;
             ValueUSD = value;
             Label = label;
+            AssetType = AssetType.FUNGIBLE;
         }
     }
 }
