@@ -16,7 +16,6 @@ namespace Crypto_Wallet.Classes.Assets
             Adress = Guid.NewGuid();
             Name = name;
             ValueUSD = value;
-            ValueAdress = "0"; // GENERIRANJE?
             Label = null;
             AssetType = AssetType.NONFUNGIBLE;
         }

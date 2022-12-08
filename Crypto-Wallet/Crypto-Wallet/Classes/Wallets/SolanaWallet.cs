@@ -8,7 +8,6 @@ namespace Crypto_Wallet.Classes.Wallets
 {
     public class SolanaWallet : Wallet
     {
-        //public List<Guid> NonFungibleAssets = new List<Guid>();
         public SolanaWallet(bool isCreatedByUser, List<Asset>? defaultFungibleAssets, List<Asset>? defaultNonFungibleAssets)
         {
             Adress = Guid.NewGuid();
@@ -17,7 +16,8 @@ namespace Crypto_Wallet.Classes.Wallets
 
             if (defaultFungibleAssets is not null)
                 for (int i = 0; i < defaultFungibleAssets.Count(); i++)
-                    FungibleAssets.Add(defaultFungibleAssets[i].Adress, 1);
+                    FungibleAssets.Add(defaultFungibleAssets[i].Adress, getRandomInt());
+            
 
             if (defaultNonFungibleAssets is not null)
                 for (int i = 0; i < defaultNonFungibleAssets.Count(); i++)
@@ -38,6 +38,12 @@ namespace Crypto_Wallet.Classes.Wallets
                         totalValue += supportedAsset.ValueUSD;
 
             TotalAssetValue = totalValue;
+        }
+
+        private int getRandomInt()
+        {
+            Random random = new Random();
+            return random.Next(1, 5);
         }
     }
 }

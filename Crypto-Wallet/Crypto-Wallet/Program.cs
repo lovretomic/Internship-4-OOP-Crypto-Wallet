@@ -7,37 +7,37 @@ using System.ComponentModel;
 
 var assets = new List<Asset>()
 {
-    new FungibleAsset("FA1", 83.1, "L1"),
-    new FungibleAsset("FA2", 102.6, "L2"),
-    new FungibleAsset("FA3", 103.4, "L3"),
-    new FungibleAsset("FA4", 35.5, "L4"),
-    new FungibleAsset("FA5", 68.6, "L5"),
-    new FungibleAsset("FA6", 42.8, "L6"),
-    new FungibleAsset("FA7", 107.4, "L7"),
-    new FungibleAsset("FA8", 61.8, "L8"),
-    new FungibleAsset("FA9", 49.3, "L9"),
-    new FungibleAsset("FA10", 84.5, "L10"),
+    new FungibleAsset("Cardano", 83.1, "ADA"),
+    new FungibleAsset("Polygon", 102.6, "MATIC"),
+    new FungibleAsset("Bitcoin", 103.4, "BTC"),
+    new FungibleAsset("Dogecoin", 35.5, "DOGE"),
+    new FungibleAsset("Ethereum", 68.6, "ETH"),
+    new FungibleAsset("Solana", 42.8, "SOL"),
+    new FungibleAsset("Avalanche", 107.4, "AVAX"),
+    new FungibleAsset("XRP", 61.8, "XRP"),
+    new FungibleAsset("Tether", 49.3, "USDT"),
+    new FungibleAsset("BNB", 84.5, "BNB"),
 
-    new NonFungibleAsset("NFA1", 43.5),
-    new NonFungibleAsset("NFA2", 26.2),
-    new NonFungibleAsset("NFA3", 12.5),
-    new NonFungibleAsset("NFA4", 80.4),
-    new NonFungibleAsset("NFA5", 75.8),
-    new NonFungibleAsset("NFA6", 44.4),
-    new NonFungibleAsset("NFA7", 69.6),
-    new NonFungibleAsset("NFA8", 62.0),
-    new NonFungibleAsset("NFA9", 96.8),
-    new NonFungibleAsset("NFA10", 78.4),
-    new NonFungibleAsset("NFA11", 58.7),
-    new NonFungibleAsset("NFA12", 106.3),
-    new NonFungibleAsset("NFA13", 16.3),
-    new NonFungibleAsset("NFA14", 97.8),
-    new NonFungibleAsset("NFA15", 22.9),
-    new NonFungibleAsset("NFA16", 32.9),
-    new NonFungibleAsset("NFA17", 10.4),
-    new NonFungibleAsset("NFA18", 71.9),
-    new NonFungibleAsset("NFA19", 34.9),
-    new NonFungibleAsset("NFA20", 2.1)
+    new NonFungibleAsset("Red Monkey", 43.5),
+    new NonFungibleAsset("Blue Monkey", 26.2),
+    new NonFungibleAsset("Orange Monkey", 12.5),
+    new NonFungibleAsset("Green Monkey", 80.4),
+    new NonFungibleAsset("Yellow Monkey", 75.8),
+    new NonFungibleAsset("Pixel Mona Lisa", 44.4),
+    new NonFungibleAsset("Angry Pizza Slice", 69.6),
+    new NonFungibleAsset("Funny Koala", 62.0),
+    new NonFungibleAsset("Swag Beethoven", 96.8),
+    new NonFungibleAsset("Nyan Cat", 78.4),
+    new NonFungibleAsset("3d Sneakers", 58.7),
+    new NonFungibleAsset("Pac-man", 106.3),
+    new NonFungibleAsset("Color Blob", 16.3),
+    new NonFungibleAsset("Formal Penguin", 97.8),
+    new NonFungibleAsset("Abstract Art", 22.9),
+    new NonFungibleAsset("Fanart 1", 32.9),
+    new NonFungibleAsset("Fanart 2", 10.4),
+    new NonFungibleAsset("Fanart 3", 71.9),
+    new NonFungibleAsset("Pink Fluffy Unicorn", 34.9),
+    new NonFungibleAsset("George Washington", 2.1)
 
 };
 
@@ -58,11 +58,16 @@ var wallets = new List<Wallet>()
 
 var transactions = new List<Transaction>();
 
-foreach(var wallet in wallets)
+void setSupportedAssets()
 {
-    if (wallet.WalletType is WalletType.BTC) wallet.SupportedAssets = assets.GetRange(0, 10);
-    else wallet.SupportedAssets = assets;
+    foreach (var wallet in wallets)
+    {
+        if (wallet.WalletType is WalletType.BTC) wallet.SupportedAssets = assets.GetRange(0, 10);
+        else wallet.SupportedAssets = assets;
+    }
 }
+
+setSupportedAssets();
 
 int getInt()
 {
@@ -123,22 +128,29 @@ void createWallet()
     {
         case 1:
             wallets.Add(new BitcoinWallet(true, null));
+            setSupportedAssets();
             Console.WriteLine("Uspjesno kreiran Bitcoin wallet!");
             returnToMainMenu(true);
             break;
         case 2:
             wallets.Add(new EthereumWallet(true, null, null));
+            setSupportedAssets();
             Console.WriteLine("Uspjesno kreiran Ethereum wallet!");
             returnToMainMenu(true);
             break;
         case 3:
             wallets.Add(new SolanaWallet(true, null, null));
+            setSupportedAssets();
             Console.WriteLine("Uspjesno kreiran Solana wallet!");
             returnToMainMenu(true);
             break;
+        case 0:
+            returnToMainMenu(false);
+            break;
         default:
-            Console.WriteLine("## Pogresan unos! Unos mora biti neka od navedenih opcija.");
-            returnToMainMenu(true);
+            Console.WriteLine("## Pogresan unos! Unos mora biti neka od navedenih opcija. Unesi bilo koji znak za ponovni unos.");
+            Console.ReadLine();
+            createWallet();
             break;
     }
 }
@@ -167,7 +179,7 @@ void accessWallet()
     bool walletFound;
     do
     {
-        Console.WriteLine("Unesi adresu walleta kojem želiš ptistupiti.");
+        Console.WriteLine("Unesi adresu walleta kojem zelis pristupiti.");
         var adressInput = Console.ReadLine();
 
         walletFound = false;
@@ -177,7 +189,7 @@ void accessWallet()
             {
                 walletFound = true;
                 Console.Clear();
-                Console.WriteLine("Wallet pronađen!\n");
+                Console.WriteLine("Wallet pronaden!\n");
 
                 Console.WriteLine("- Funkcije -");
                 Console.WriteLine("1 - Portfolio");
@@ -212,7 +224,7 @@ void accessWallet()
         }
         if (!walletFound)
         {
-            Console.WriteLine("## Wallet nije pronađen. Zelis li ponovno unijeti adresu?");
+            Console.WriteLine("## Wallet nije pronaden. Zelis li ponovno unijeti adresu?");
             Console.WriteLine("1 - Da");
             Console.WriteLine("2 - Ne");
             switch (getInt())
@@ -262,7 +274,7 @@ void printWalletPortfolio(Wallet wallet)
         wallet.TimesAccessed++;
         wallet.LastAccessedTotalAssetValue = wallet.TotalAssetValue;
     }
-    Console.WriteLine($"FUNGIBLE ASSETI :");
+    Console.WriteLine($"NON-FUNGIBLE ASSETI :");
     foreach (var nonFungibleAssetGuid in wallet.NonFungibleAssets)
     {
         string assetName = "";
@@ -290,6 +302,11 @@ void printWalletPortfolio(Wallet wallet)
 }
 void transfer(Wallet wallet)
 {
+    if(!(wallet.FungibleAssets.Any() || wallet.NonFungibleAssets.Any()))
+    {
+        Console.WriteLine("Ovaj wallet ne sadrzi niti jedan asset.");
+        returnToMainMenu(true);
+    }
     Wallet receiverWallet = null;
     Asset asset = null;
     int inputQuantity = 0;
@@ -313,6 +330,7 @@ void transfer(Wallet wallet)
     var receiverAdress = Console.ReadLine();
 
     bool adressExists = false;
+
     do
     {
         foreach (var singleWallet in wallets)
@@ -338,7 +356,7 @@ void transfer(Wallet wallet)
     foreach (var fungibleAsset in wallet.FungibleAssets)
     {
         foreach (var singleAsset in assets)
-        {   // ako je bitcoin wallet prikazi samo fungible assete
+        {
             if(singleAsset.Adress == fungibleAsset.Key)
             {
                 Console.WriteLine($"╔ IME : {singleAsset.Name}");
@@ -347,6 +365,24 @@ void transfer(Wallet wallet)
             }
         }
     }
+
+    if (wallet.WalletType != WalletType.BTC && receiverWallet.WalletType != WalletType.BTC)
+    {
+        Console.WriteLine("\nNON-FUNGIBLE ASSETI:");
+        foreach (var nonFungibleAsset in wallet.NonFungibleAssets)
+        {
+            foreach (var singleAsset in assets)
+            {
+                if (singleAsset.Adress == nonFungibleAsset)
+                {
+                    Console.WriteLine($"╔ IME : {singleAsset.Name}");
+                    Console.WriteLine($"╚ ADRESA : {singleAsset.Adress}");
+                    Console.WriteLine("");
+                }
+            }
+        }
+    }
+
 
     Console.WriteLine("Unesi adresu asseta koji zelis poslati: ");
     var assetAdressInput = Console.ReadLine();
@@ -378,7 +414,7 @@ void transfer(Wallet wallet)
     
     if (assetType == AssetType.FUNGIBLE)
     {
-        Console.WriteLine("Unesi kolicinu asseta ili 0 za povratak na glavni izbornik: ");
+        Console.WriteLine($"Unesi kolicinu asseta ili 0 za povratak na glavni izbornik: ");
         int totalQuantity = wallet.FungibleAssets[assetAdress];
         do
         {
@@ -419,11 +455,14 @@ void transfer(Wallet wallet)
                         else wallets[i].NonFungibleAssets.Remove(asset.Adress);
                     }
              
-                    if(receiverWallet.Adress == wallets[i].Adress)
+                    if (receiverWallet.Adress == wallets[i].Adress)
                     {
                         wallets[i].Transactions.Add(transaction.Id);
                         if (asset.AssetType == AssetType.FUNGIBLE)
-                            wallets[i].FungibleAssets.Add(asset.Adress, inputQuantity); // provjeri ako taj asset vec postoji
+                            if (wallets[i].FungibleAssets.ContainsKey(asset.Adress))
+                                wallets[i].FungibleAssets[asset.Adress] += inputQuantity;
+                            else
+                                wallets[i].FungibleAssets.Add(asset.Adress, inputQuantity);
                         else wallets[i].NonFungibleAssets.Add(asset.Adress);
                     }
                 }
@@ -445,11 +484,11 @@ void transfer(Wallet wallet)
 void printTransactions(Wallet wallet)
 {
     Console.Clear();
-    Console.WriteLine("--- POVIJEST TRANSAKCIJA ---");
+    Console.WriteLine("--- Povijest transakcija ---");
     int transactionCount = 0;
     foreach(var transaction in transactions)
     {
-        if(transaction.SenderAdress == wallet.Adress)
+        if(transaction.SenderAdress == wallet.Adress || transaction.ReceiverAdress == wallet.Adress)
         {
             transactionCount++;
             Console.WriteLine($"ID : {transaction.Id}");
@@ -475,7 +514,7 @@ void printTransactions(Wallet wallet)
 void revokeTransaction(Wallet wallet)
 {
     Console.Clear();
-    Console.WriteLine("--- OPOZIVANJE TRANSAKCIJE ---");
+    Console.WriteLine("--- Opozivanje transakcije ---");
 
     foreach(var transaction in transactions)
         foreach (var walletTransactionId in wallet.Transactions)
@@ -497,6 +536,13 @@ void revokeTransaction(Wallet wallet)
         foreach (var transaction in wallet.Transactions)
             if (String.Equals(transactionAdressInput, transaction.ToString()))
             {
+                foreach(var singleTransaction in transactions)
+                    if(singleTransaction.Id == transaction && singleTransaction.isRevoked == true)
+                    {
+                        Console.WriteLine("## Ta je transakcija vec opozvana. Unesi bilo koji znak za povratak na izbor walleta.");
+                        Console.ReadLine();
+                        accessWallet();
+                    }
                 isValidInput = true;
                 break;
             }
@@ -504,17 +550,24 @@ void revokeTransaction(Wallet wallet)
             Console.WriteLine("## Transakcija s tom adresom nije pronadena. Unesi novu adresu ili 0 za povratak na glavni izbornik.");
     } while (!isValidInput);
     
-    // OPOZOVI TRANSAKCIJU
     foreach(var transaction in transactions)
     {
-        if(String.Equals(transaction.Id.ToString(), transactionAdressInput))
-            for(int i = 0; i < wallets.Count(); i++)
+        if(String.Equals(transactionAdressInput, transaction.Id.ToString()) && (DateTime.Now - transaction.Date).TotalSeconds > 45)
+        {
+            Console.WriteLine("## Transakciju nije moguce opozvati. Provedena je prije vise od 45 sekundi! Unesi bilo koji znak za povratak na izbor walleta.");
+            Console.ReadLine();
+            accessWallet();
+        }
+
+        if (String.Equals(transaction.Id.ToString(), transactionAdressInput))
+        {
+            for (int i = 0; i < wallets.Count(); i++)
             {
                 if (wallets[i].Adress == transaction.SenderAdress)
                 {
-                    foreach(var asset in assets)
+                    foreach (var asset in assets)
                     {
-                        if(asset.Adress == transaction.AssetAdress)
+                        if (asset.Adress == transaction.AssetAdress)
                         {
                             if (transaction.TransactionType == AssetType.FUNGIBLE)
                             {
@@ -543,11 +596,9 @@ void revokeTransaction(Wallet wallet)
                     }
                 }
             }
+            transaction.isRevoked = true;
+        }
     }
-
-    for (int i = 0; i < transactions.Count(); i++)
-        if (String.Equals(transactions[i].Id, transactionAdressInput))
-            transactions[i].isRevoked = true;
 
     Console.WriteLine("Transakcija uspjesno opozvana!");
     returnToMainMenu(true);
