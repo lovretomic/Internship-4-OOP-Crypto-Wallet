@@ -3,6 +3,7 @@ using Crypto_Wallet.Classes.Assets;
 using Crypto_Wallet.Classes.Transactions;
 using Crypto_Wallet.Classes.Wallets;
 using Crypto_Wallet.Enums;
+using System.ComponentModel;
 
 var assets = new List<Asset>()
 {
@@ -87,7 +88,7 @@ void returnToMainMenu(bool askForReturn)
 void MainMenu()
 {
     Console.Clear();
-    Console.WriteLine("--- GLAVNI IZBORNIK ---");
+    Console.WriteLine("--- Glavni izbornik ---");
     Console.WriteLine("1 - Kreiraj wallet");
     Console.WriteLine("2 - Pristupi walletu");
     Console.WriteLine("0 - Izlaz iz aplikacije");
@@ -113,7 +114,7 @@ MainMenu();
 void createWallet()
 {
     Console.Clear();
-    Console.WriteLine("--- KREIRANJE WALLETA ---");
+    Console.WriteLine("--- Kreiranje walleta ---");
     Console.WriteLine("1 - Bitcoin wallet");
     Console.WriteLine("2 - Ethereum wallet");
     Console.WriteLine("3 - Solana wallet");
@@ -145,7 +146,7 @@ void createWallet()
 void accessWallet()
 {
     Console.Clear();
-    Console.WriteLine("--- PRISTUP WALLETU ---");
+    Console.WriteLine("--- Pristup walletu ---");
 
     int walletCount = 0;
     foreach (var wallet in wallets)
@@ -178,7 +179,7 @@ void accessWallet()
                 Console.Clear();
                 Console.WriteLine("Wallet pronađen!\n");
 
-                Console.WriteLine("- FUNKCIJE -");
+                Console.WriteLine("- Funkcije -");
                 Console.WriteLine("1 - Portfolio");
                 Console.WriteLine("2 - Transfer");
                 Console.WriteLine("3 - Povijest transakcija");
@@ -195,6 +196,9 @@ void accessWallet()
                     case 3:
                         printTransactions(wallet);
                         break;
+                    case 4:
+                        revokeTransaction(wallet);
+                        break;
                     case 0:
                         accessWallet();
                         break;
@@ -208,7 +212,7 @@ void accessWallet()
         }
         if (!walletFound)
         {
-            Console.WriteLine("Wallet nije pronađen. Zelis li ponovno unijeti adresu?");
+            Console.WriteLine("## Wallet nije pronađen. Zelis li ponovno unijeti adresu?");
             Console.WriteLine("1 - Da");
             Console.WriteLine("2 - Ne");
             switch (getInt())
@@ -230,7 +234,7 @@ void accessWallet()
 void printWalletPortfolio(Wallet wallet)
 {
     Console.Clear();
-    Console.WriteLine("--- PORFTOLIO ---");
+    Console.WriteLine("--- Portfolio ---");
     Console.WriteLine($"UKUPNA VRIJEDNOST ASSETA : {wallet.TotalAssetValue} USD");
     Console.WriteLine($"FUNGIBLE ASSETI :");
     foreach(var fungibleAsset in wallet.FungibleAssets)
@@ -470,5 +474,81 @@ void printTransactions(Wallet wallet)
 
 void revokeTransaction(Wallet wallet)
 {
+    Console.Clear();
+    Console.WriteLine("--- OPOZIVANJE TRANSAKCIJE ---");
 
+    foreach(var transaction in transactions)
+        foreach (var walletTransactionId in wallet.Transactions)
+            if (String.Equals(transaction.Id, walletTransactionId))
+            {
+                Console.WriteLine("");
+                Console.WriteLine($"TIP : {transaction.TransactionType}");
+                Console.WriteLine($"DATUM : {transaction.Date}");
+                Console.WriteLine($"ID : {transaction.Id}");
+            }
+
+    Console.WriteLine("\nUnesi adresu transakcije koju zelis opozvati ili 0 za povratak na glavni izbornik:");
+    var isValidInput = false;
+    string transactionAdressInput;
+    do
+    {
+        transactionAdressInput = Console.ReadLine();
+        if (String.Equals(transactionAdressInput, "0")) returnToMainMenu(false);
+        foreach (var transaction in wallet.Transactions)
+            if (String.Equals(transactionAdressInput, transaction.ToString()))
+            {
+                isValidInput = true;
+                break;
+            }
+        if(!isValidInput)
+            Console.WriteLine("## Transakcija s tom adresom nije pronadena. Unesi novu adresu ili 0 za povratak na glavni izbornik.");
+    } while (!isValidInput);
+    
+    // OPOZOVI TRANSAKCIJU
+    foreach(var transaction in transactions)
+    {
+        if(String.Equals(transaction.Id.ToString(), transactionAdressInput))
+            for(int i = 0; i < wallets.Count(); i++)
+            {
+                if (wallets[i].Adress == transaction.SenderAdress)
+                {
+                    foreach(var asset in assets)
+                    {
+                        if(asset.Adress == transaction.AssetAdress)
+                        {
+                            if (transaction.TransactionType == AssetType.FUNGIBLE)
+                            {
+                                if (wallets[i].FungibleAssets.ContainsKey(transaction.AssetAdress))
+                                    wallets[i].FungibleAssets[transaction.AssetAdress] += transaction.AssetQuantity;
+                                else
+                                    wallets[i].FungibleAssets.Add(transaction.AssetAdress, transaction.AssetQuantity);
+                            }
+                            else
+                                wallets[i].NonFungibleAssets.Add(transaction.AssetAdress);
+                        }
+                    }
+                }
+
+                if (wallets[i].Adress == transaction.ReceiverAdress)
+                {
+                    foreach (var asset in assets)
+                    {
+                        if (asset.Adress == transaction.AssetAdress)
+                        {
+                            if (transaction.TransactionType == AssetType.FUNGIBLE)
+                                wallets[i].FungibleAssets[transaction.AssetAdress] -= transaction.AssetQuantity;
+                            else
+                                wallets[i].NonFungibleAssets.Remove(transaction.AssetAdress);
+                        }
+                    }
+                }
+            }
+    }
+
+    for (int i = 0; i < transactions.Count(); i++)
+        if (String.Equals(transactions[i].Id, transactionAdressInput))
+            transactions[i].isRevoked = true;
+
+    Console.WriteLine("Transakcija uspjesno opozvana!");
+    returnToMainMenu(true);
 }
